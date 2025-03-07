@@ -2,7 +2,6 @@ package com.microservices.account_service.controller;
 
 import com.microservices.account_service.dto.AccountCreationRequest;
 import com.microservices.account_service.dto.AccountDTO;
-import com.microservices.account_service.dto.AmountRequest;
 import com.microservices.account_service.dto.BalanceUpdateDTO;
 import com.microservices.account_service.service.AccountService;
 
@@ -15,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
+//@CrossOrigin(origins = "http://localhost:3001")
 public class AccountController {
 
     
@@ -27,7 +27,7 @@ public class AccountController {
 		this.accountService = accountService;
 	}
 
-	@PostMapping
+	@PostMapping("/create")
     public ResponseEntity<AccountDTO> createAccount(@RequestBody @Valid AccountCreationRequest accountCreationDTO) {
         try {
             return new ResponseEntity<>(accountService.createAccount(accountCreationDTO), HttpStatus.CREATED);
@@ -41,21 +41,6 @@ public class AccountController {
         AccountDTO accountDTO = accountService.getAccountById(id);
         return ResponseEntity.ok(accountDTO);
     }
-
-    @PutMapping("/{id}/deposit")
-    public ResponseEntity<AccountDTO> deposit(@PathVariable long id, @RequestBody @Valid AmountRequest amountRequest) {
-    	double amount = amountRequest.getAmount();
-    	AccountDTO accountDTO = accountService.deposit(id, amount);
-        return ResponseEntity.ok(accountDTO);
-    }
-
-    @PutMapping("/{id}/withdraw")
-    public ResponseEntity<AccountDTO> withdraw(@PathVariable long id, @RequestBody @Valid AmountRequest amountRequest) {
-        double amount = amountRequest.getAmount();
-        AccountDTO accountDTO = accountService.withdraw(id, amount);
-        return ResponseEntity.ok(accountDTO);
-    }
-
 
     @GetMapping
     public ResponseEntity<List<AccountDTO>> getAllAccounts() {
