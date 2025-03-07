@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: api_gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: ACCOUNT-SERVICE
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/accounts/**
+          filters:
+          - AuthenticationFilter
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+          
+        - id: PROFILE-SERVICE
+          uri: lb://PROFILE-SERVICE
+          predicates:
+            - Path=/profiles/**
+          filters:
+            - AuthenticationFilter
+        - id: TRANSACTION-SERVICE
+          uri: lb://TRANSACTION-SERVICE
+          predicates:
+            - Path=/transactions/**
+          filters:
+            - AuthenticationFilter
+        - id: LOAN-SERVICE  # Added LOAN-SERVICE
+          uri: lb://LOAN-SERVICE
+          predicates:
+            - Path=/loans/**
+          filters:
+            - AuthenticationFilter
+      discovery:
+        locator:
+          enabled: true
+
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/eureka/
+    instance:
+      prefer-ip-address: true
+
+server:
+  port: 8765
